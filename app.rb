@@ -6,8 +6,8 @@ require 'sinatra'
 
 
 class App < Sinatra::Application
-  NAME = 'NAME'  # FIXME
-  GITHUB_REPOS_URI = 'GITHUB_REPOS_URI'  # FIXME
+  NAME = 'vim-doc'
+  GITHUB_REPOS_URI = 'https://github.com/kana/vim-doc'
 
   get '/' do
     haml :index
