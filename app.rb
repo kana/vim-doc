@@ -26,7 +26,12 @@ class App < Sinatra::Application
     if response.status == 200 then
       haml :help,
            locals: {
+             host: host,
              html_help: VimHelp.htmlize(response.body),
+             path: path,
+             ref: ref,
+             repos: repos,
+             user: user,
            }
     else
       halt response.status, response.header['Status']
