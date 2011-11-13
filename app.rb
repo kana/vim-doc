@@ -17,15 +17,18 @@ class App < Sinatra::Application
   get '/:host/:user/:repos/:ref/*.html' do |host, user, repos, ref, path|
     case host
     when 'github'
-      response = fetch_github(user, repos, ref, path)
+      doc_uri = get_doc_uri_in_github(user, repos, ref, path)
     else
       halt 403, "Host '#{host}' is not supported."
     end
 
     # FIXME: Tweak caching.
+    response = fetch(doc_uri)
     if response.status == 200 then
       haml :help,
            locals: {
+             conversion_time: Time.now,
+             doc_uri: doc_uri,
              host: host,
              html_help: VimHelp.htmlize(response.body),
              path: path,
@@ -43,8 +46,8 @@ class App < Sinatra::Application
       HTTPClient.new.get(uri)
     end
 
-    def fetch_github(user, repos, ref, path)
-      fetch("https://raw.github.com/#{user}/#{repos}/#{ref}/#{path}")
+    def get_doc_uri_in_github(user, repos, ref, path)
+      "https://raw.github.com/#{user}/#{repos}/#{ref}/#{path}"
     end
   end
 end
