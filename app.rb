@@ -15,6 +15,8 @@ class App < Sinatra::Application
   end
 
   get '/:host/:user/:repos/:ref/*.html' do |host, user, repos, ref, path|
+    cache_control :public, :max_age => 30 * 24 * 60 * 60
+
     case host
     when 'github'
       doc_uri = get_doc_uri_in_github(user, repos, ref, path)
@@ -22,7 +24,6 @@ class App < Sinatra::Application
       halt 403, "Host '#{host}' is not supported."
     end
 
-    # FIXME: Tweak caching.
     response = fetch(doc_uri)
     if response.status == 200 then
       haml :help,
