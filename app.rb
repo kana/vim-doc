@@ -46,7 +46,44 @@ end
 
 class VimHelp
   def self.htmlize(s)
-    s  # FIXME: Implement.
+    self.parse(s).map do |token|
+      if token.link then
+        label = CGI.escape_html(token.label)
+        uri = "\##{CGI.escape_html(token.link)}"
+        %Q[<a href="#{uri}">#{label}</a>]
+      elsif token.tag then
+        label = CGI.escape_html(token.label)
+        id = CGI.escape_html(token.tag)
+        %Q[<a id="#{id}">#{label}</a>]
+      else
+        CGI.escape_html(token.label)
+      end
+    end.join('')
+  end
+
+  def self.parse(s)
+    tokens = []
+    s.scan(/((\|(\S+)\|)|(\*(\S+)\*)|(\|[^|]*)|(\*[^*]*)|([^|*]+))/) do
+      |label, _, link, _, tag, _, _, _|
+      tokens.push(Token.new(label, link, tag))
+    end
+    tokens
+  end
+end
+
+class Token
+  attr_accessor :label, :link, :tag
+
+  def initialize(label, link, tag)
+    self.label = label
+    self.link = link
+    self.tag = tag
+  end
+
+  def ==(other)
+    self.label == other.label and
+    self.link == other.link and
+    self.tag == other.tag
   end
 end
 
