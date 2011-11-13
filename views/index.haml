@@ -1,0 +1,27 @@
+!!! 5
+%html
+  %head
+    %title= App::NAME
+    %meta(charset='utf-8')
+  %body
+    #header
+      %h1= App::NAME
+
+    #footer
+      %address
+        = App::NAME
+        @@VERSION@@
+        &#x2014;
+        Copyright &copy; 2011 
+        %a(href='http://whileimautomaton.net/') Kana Natsuno
+        (
+        %a(href='http://twitter.com/kana1')> @kana1
+        )
+        &#x2014;
+        %a(href='#{App::GITHUB_REPOS_URI}')
+        Watch changes
+        &#x2014;
+        %a(href='#{App::GITHUB_REPOS_URI}/issues')
+        Report issues
+
+-# __END__
