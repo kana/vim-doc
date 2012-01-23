@@ -1,6 +1,7 @@
 require 'cgi'
 require 'haml'
 require 'httpclient'
+require 'parslet'
 require 'sinatra'
 
 
