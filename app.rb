@@ -114,6 +114,26 @@ class VimHelpP < Parslet::Parser
   root(:help)
 end
 
+class VimHelpT < Parslet::Transform
+  rule(:etc => simple(:char)) {char}
+  rule(
+    :tag_anchor_begin => simple(:b),
+    :tag_anchor => simple(:id),
+    :tag_anchor_end => simple(:e)
+  ) {
+    # TODO: Make a real anchor.
+    "#{b}#{id}#{e}"
+  }
+  rule(
+    :tag_link_begin => simple(:b),
+    :tag_link => simple(:id),
+    :tag_link_end => simple(:e)
+  ) {
+    # TODO: Make a real link.
+    "#{b}#{id}#{e}"
+  }
+end
+
 
 
 

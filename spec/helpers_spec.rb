@@ -137,3 +137,28 @@ describe VimHelpP do
     ]
   end
 end
+
+describe VimHelpT do
+  it 'should transform :etc into a plain string' do
+    VimHelpT.new.apply({:etc => 'f'}).should == 'f'
+    VimHelpT.new.apply(VimHelpP.new.parse('foo')).should == ['f', 'o', 'o']
+  end
+
+  it 'should transform :tag_anchor into an anchor' do
+    VimHelpT.new.apply({
+      :tag_anchor_begin => '*',
+      :tag_anchor => 'foo',
+      :tag_anchor_end => '*',
+    }).should == '*foo*'
+    VimHelpT.new.apply(VimHelpP.new.parse('*foo*')).should == ['*foo*']
+  end
+
+  it 'should transform :tag_link into a link' do
+    VimHelpT.new.apply({
+      :tag_link_begin => '|',
+      :tag_link => 'foo',
+      :tag_link_end => '|',
+    }).should == '|foo|'
+    VimHelpT.new.apply(VimHelpP.new.parse('|foo|')).should == ['|foo|']
+  end
+end
