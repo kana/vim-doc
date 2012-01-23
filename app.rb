@@ -133,8 +133,12 @@ class VimHelpT < Parslet::Transform
     :tag_link => simple(:id),
     :tag_link_end => simple(:e)
   ) {
-    # TODO: Make a real link.
-    "#{b}#{id}#{e}"
+    # TODO: Link to vimdoc.sf.net for built-in stuffs.
+    # TODO: Link to vim-doc.heroku.com for others but "learned" stuffs.
+    s_b = CGI.escape_html(b.to_s)
+    s_id = CGI.escape_html(id.to_s)
+    s_e = CGI.escape_html(e.to_s)
+    %Q[<span class="tag_link">#{s_b}<a href="##{s_id}">#{s_id}</a>#{s_e}</span>]
   }
 end
 

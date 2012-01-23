@@ -167,7 +167,12 @@ describe VimHelpT do
       :tag_link_begin => '|',
       :tag_link => 'foo',
       :tag_link_end => '|',
-    }).should == '|foo|'
-    VimHelpT.new.apply(VimHelpP.new.parse('|foo|')).should == ['|foo|']
+    }).should == '<span class="tag_link">|<a href="#foo">foo</a>|</span>'
+    VimHelpT.new.apply(VimHelpP.new.parse('|foo|')).should == [
+      '<span class="tag_link">|<a href="#foo">foo</a>|</span>',
+    ]
+    VimHelpT.new.apply(VimHelpP.new.parse('|f<o|')).should == [
+      '<span class="tag_link">|<a href="#f&lt;o">f&lt;o</a>|</span>',
+    ]
   end
 end
