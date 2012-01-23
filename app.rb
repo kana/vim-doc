@@ -123,8 +123,10 @@ class VimHelpT < Parslet::Transform
     :tag_anchor => simple(:id),
     :tag_anchor_end => simple(:e)
   ) {
-    # TODO: Make a real anchor.
-    "#{b}#{id}#{e}"
+    s_b = CGI.escape_html(b.to_s)
+    s_id = CGI.escape_html(id.to_s)
+    s_e = CGI.escape_html(e.to_s)
+    %Q[<span class="tag_anchor">#{s_b}<a id="#{s_id}">#{s_id}</a>#{s_e}</span>]
   }
   rule(
     :tag_link_begin => simple(:b),

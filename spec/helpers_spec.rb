@@ -153,8 +153,13 @@ describe VimHelpT do
       :tag_anchor_begin => '*',
       :tag_anchor => 'foo',
       :tag_anchor_end => '*',
-    }).should == '*foo*'
-    VimHelpT.new.apply(VimHelpP.new.parse('*foo*')).should == ['*foo*']
+    }).should == '<span class="tag_anchor">*<a id="foo">foo</a>*</span>'
+    VimHelpT.new.apply(VimHelpP.new.parse('*foo*')).should == [
+      '<span class="tag_anchor">*<a id="foo">foo</a>*</span>',
+    ]
+    VimHelpT.new.apply(VimHelpP.new.parse('*f<o*')).should == [
+      '<span class="tag_anchor">*<a id="f&lt;o">f&lt;o</a>*</span>',
+    ]
   end
 
   it 'should transform :tag_link into a link' do
