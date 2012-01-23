@@ -32,7 +32,7 @@ class App < Sinatra::Application
              conversion_time: Time.now,
              doc_uri: doc_uri,
              host: host,
-             html_help: VimHelp.htmlize(response.body),
+             html_help: htmlize(response.body),
              path: path,
              ref: ref,
              repos: repos,
@@ -51,49 +51,10 @@ class App < Sinatra::Application
     def get_doc_uri_in_github(user, repos, ref, path)
       "https://raw.github.com/#{user}/#{repos}/#{ref}/#{path}"
     end
-  end
-end
 
-class VimHelp
-  def self.htmlize(s)
-    self.parse(s).map do |token|
-      if token.link then
-        label = CGI.escape_html(token.label)
-        uri = "\##{CGI.escape_html(token.link)}"
-        %Q[<a href="#{uri}">#{label}</a>]
-      elsif token.tag then
-        label = CGI.escape_html(token.label)
-        id = CGI.escape_html(token.tag)
-        %Q[<a id="#{id}">#{label}</a>]
-      else
-        CGI.escape_html(token.label)
-      end
-    end.join('')
-  end
-
-  def self.parse(s)
-    tokens = []
-    s.scan(/((\|(\S+)\|)|(\*(\S+)\*)|(\|[^|]*)|(\*[^*]*)|([^|*]+))/) do
-      |label, _, link, _, tag, _, _, _|
-      tokens.push(Token.new(label, link, tag))
+    def htmlize(s)
+      VimHelpT.new.apply(VimHelpP.new.parse(s)).join()
     end
-    tokens
-  end
-end
-
-class Token
-  attr_accessor :label, :link, :tag
-
-  def initialize(label, link, tag)
-    self.label = label
-    self.link = link
-    self.tag = tag
-  end
-
-  def ==(other)
-    self.label == other.label and
-    self.link == other.link and
-    self.tag == other.tag
   end
 end
 
