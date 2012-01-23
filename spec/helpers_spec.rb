@@ -142,6 +142,10 @@ describe VimHelpT do
   it 'should transform :etc into a plain string' do
     VimHelpT.new.apply({:etc => 'f'}).should == 'f'
     VimHelpT.new.apply(VimHelpP.new.parse('foo')).should == ['f', 'o', 'o']
+    VimHelpT.new.apply({:etc => '<'}).should == '&lt;'
+    VimHelpT.new.apply({:etc => '>'}).should == '&gt;'
+    VimHelpT.new.apply({:etc => '"'}).should == '&quot;'
+    VimHelpT.new.apply({:etc => '&'}).should == '&amp;'
   end
 
   it 'should transform :tag_anchor into an anchor' do

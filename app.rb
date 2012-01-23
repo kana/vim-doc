@@ -115,7 +115,9 @@ class VimHelpP < Parslet::Parser
 end
 
 class VimHelpT < Parslet::Transform
-  rule(:etc => simple(:char)) {char}
+  rule(:etc => simple(:char)) {
+    CGI.escape_html(char.to_s)
+  }
   rule(
     :tag_anchor_begin => simple(:b),
     :tag_anchor => simple(:id),
