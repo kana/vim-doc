@@ -97,6 +97,23 @@ class Token
   end
 end
 
+class VimHelpP < Parslet::Parser
+  rule(:etc) {match('.').as(:etc)}
+  rule(:tag_anchor) {
+    str('*').as(:tag_anchor_begin) >>
+    match('[^ \t*|]').repeat(1).as(:tag_anchor) >>
+    str('*').as(:tag_anchor_end)
+  }
+  rule(:tag_link) {
+    str('|').as(:tag_link_begin) >>
+    match('[^ \t*|]').repeat(1).as(:tag_link) >>
+    str('|').as(:tag_link_end)
+  }
+  rule(:token) {tag_anchor | tag_link | etc}
+  rule(:help) {token.repeat}
+  root(:help)
+end
+
 
 
 

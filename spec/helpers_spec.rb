@@ -53,3 +53,87 @@ describe 'VimHelp' do
     it 'should generate valid id for HTML to link'
   end
 end
+
+describe VimHelpP do
+  it 'should parse a plain character as :etc' do
+    VimHelpP.new.parse('foo bar baz').should == [
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => ' '},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => ' '},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'z'},
+    ]
+  end
+
+  it 'should parse a tag anchor' do
+    VimHelpP.new.parse('foo *bar* baz').should == [
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => ' '},
+      {:tag_anchor_begin => '*', :tag_anchor => 'bar', :tag_anchor_end => '*'},
+      {:etc => ' '},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'z'},
+    ]
+    VimHelpP.new.parse('*foo bar*').should == [
+      {:etc => '*'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => ' '},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '*'},
+    ]
+    VimHelpP.new.parse("*foo\tbar*").should == [
+      {:etc => '*'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => "\t"},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '*'},
+    ]
+    VimHelpP.new.parse('*foo*bar*').should == [
+      {:tag_anchor_begin => '*', :tag_anchor => 'foo', :tag_anchor_end => '*'},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '*'},
+    ]
+    VimHelpP.new.parse('*foo|bar*').should == [
+      {:etc => '*'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => '|'},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '*'},
+    ]
+  end
+
+  it 'should parse a tag link' do
+    VimHelpP.new.parse('foo |bar| baz').should == [
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => ' '},
+      {:tag_link_begin => '|', :tag_link => 'bar', :tag_link_end => '|'},
+      {:etc => ' '},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'z'},
+    ]
+    VimHelpP.new.parse('|foo bar|').should == [
+      {:etc => '|'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => ' '},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '|'},
+    ]
+    VimHelpP.new.parse("|foo\tbar|").should == [
+      {:etc => '|'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => "\t"},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '|'},
+    ]
+    VimHelpP.new.parse('|foo|bar|').should == [
+      {:tag_link_begin => '|', :tag_link => 'foo', :tag_link_end => '|'},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '|'},
+    ]
+    VimHelpP.new.parse('|foo*bar|').should == [
+      {:etc => '|'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => '*'},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '|'},
+    ]
+  end
+end
