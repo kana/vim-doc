@@ -73,7 +73,16 @@ class VimHelpP < Parslet::Parser
   rule(:newline) {match('[\r\n]')}
   rule(:star) {str('*')}
   rule(:pipe) {str('|')}
+  rule(:header_letter) {match('[-A-Z]')}
+  rule(:header_word) {header_letter.repeat1}
+  rule(:header_words) {header_word >> (space.repeat1 >> header_word).repeat0}
 
+  rule(:header) {
+      (
+        header_words >>
+        (space.repeat1 >> tag_anchor).present?
+      ).as(:header)
+  }
   rule(:tag_anchor) {
     star.as(:tag_anchor_begin) >>
     ((space | newline | star | pipe).absent? >> any).
@@ -90,6 +99,7 @@ class VimHelpP < Parslet::Parser
   }
   rule(:etc) {any.as(:etc)}
   rule(:token) {
+    header |
     tag_anchor |
     tag_link |
     etc

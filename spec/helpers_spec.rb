@@ -110,6 +110,29 @@ describe VimHelpP do
       {:etc => '|'},
     ]
   end
+
+  it 'should parse a header' do
+    VimHelpP.new.parse("FOO-BAR BAZ *qux*").should == [
+      {:header => 'FOO-BAR BAZ'},
+      {:etc => ' '},
+      {:tag_anchor_begin => '*', :tag_anchor => 'qux', :tag_anchor_end => '*'},
+    ]
+    VimHelpP.new.parse("FOO-BAR BAZ |qux|").should == [
+      {:etc => 'F'},
+      {:etc => 'O'},
+      {:etc => 'O'},
+      {:etc => '-'},
+      {:etc => 'B'},
+      {:etc => 'A'},
+      {:etc => 'R'},
+      {:etc => ' '},
+      {:etc => 'B'},
+      {:etc => 'A'},
+      {:etc => 'Z'},
+      {:etc => ' '},
+      {:tag_link_begin => '|', :tag_link => 'qux', :tag_link_end => '|'},
+    ]
+  end
 end
 
 describe VimHelpT do
