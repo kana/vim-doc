@@ -33,6 +33,20 @@ describe VimHelpP do
       {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
       {:etc => '*'},
     ]
+    VimHelpP.new.parse("*foo\rbar*").should == [
+      {:etc => '*'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => "\r"},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '*'},
+    ]
+    VimHelpP.new.parse("*foo\nbar*").should == [
+      {:etc => '*'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => "\n"},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '*'},
+    ]
     VimHelpP.new.parse('*foo*bar*').should == [
       {:tag_anchor_begin => '*', :tag_anchor => 'foo', :tag_anchor_end => '*'},
       {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
@@ -66,6 +80,20 @@ describe VimHelpP do
       {:etc => '|'},
       {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
       {:etc => "\t"},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '|'},
+    ]
+    VimHelpP.new.parse("|foo\rbar|").should == [
+      {:etc => '|'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => "\r"},
+      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
+      {:etc => '|'},
+    ]
+    VimHelpP.new.parse("|foo\nbar|").should == [
+      {:etc => '|'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:etc => "\n"},
       {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
       {:etc => '|'},
     ]
