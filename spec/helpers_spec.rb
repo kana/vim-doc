@@ -211,6 +211,12 @@ describe VimHelpP do
       {:etc => "'"},
     ]
   end
+
+  it 'should parse a vimscript link' do
+    VimHelpP.new.parse("vimscript#2100").should == [
+      {:vimscript_link => {:id => '2100'}},
+    ]
+  end
 end
 
 describe VimHelpT do
@@ -281,6 +287,12 @@ describe VimHelpT do
   it 'should transform :option' do
     VimHelpT.new.apply(VimHelpP.new.parse("'wrap'")).should == [
       %q(<span class="option">'wrap'</span>),
+    ]
+  end
+
+  it 'should transform :vimscript_link' do
+    VimHelpT.new.apply(VimHelpP.new.parse('vimscript#2100')).should == [
+      %q(<a class="vimscript_link" href="http://www.vim.org/scripts/script.php?script_id=2100">vimscript#2100</a>),
     ]
   end
 end

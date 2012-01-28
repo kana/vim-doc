@@ -111,6 +111,12 @@ class VimHelpP < Parslet::Parser
       str("'")
     ).as(:option)
   }
+  rule(:vimscript_link) {
+    (
+      str('vimscript#') >>
+      match('[0-9]').repeat1.as(:id)
+    ).as(:vimscript_link)
+  }
   rule(:tag_anchor) {
     star.as(:begin) >>
     ((space | newline | star | pipe).absent? >> any).
@@ -132,6 +138,7 @@ class VimHelpP < Parslet::Parser
     special_key |
     special_term |
     option |
+    vimscript_link |
     tag_anchor |
     tag_link |
     etc
@@ -156,6 +163,10 @@ class VimHelpT < Parslet::Transform
       highlight(type, token)
     }
   end
+  rule(:vimscript_link => {:id => simple(:id)}) {
+    base_uri = 'http://www.vim.org/scripts/script.php'
+    %Q[<a class="vimscript_link" href="#{base_uri}?script_id=#{id.to_s}">vimscript##{id.to_s}</a>]
+  }
   rule(
     :begin => simple(:b),
     :tag_anchor => simple(:id),
