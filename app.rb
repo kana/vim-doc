@@ -58,16 +58,35 @@ class App < Sinatra::Application
   end
 end
 
+module Parslet::Atoms::DSL
+  def repeat0()
+    repeat(0, nil)
+  end
+
+  def repeat1()
+    repeat(1, nil)
+  end
+end
+
 class VimHelpP < Parslet::Parser
+  rule(:space) {match('[ \t]')}
+  rule(:newline) {match('[\r\n]')}
+  rule(:star) {str('*')}
+  rule(:pipe) {str('|')}
+
   rule(:tag_anchor) {
-    str('*').as(:tag_anchor_begin) >>
-    match('[^ \t\r\n*|]').repeat(1).as(:tag_anchor) >>
-    str('*').as(:tag_anchor_end)
+    star.as(:tag_anchor_begin) >>
+    ((space | newline | star | pipe).absent? >> any).
+      repeat1.
+      as(:tag_anchor) >>
+    star.as(:tag_anchor_end)
   }
   rule(:tag_link) {
-    str('|').as(:tag_link_begin) >>
-    match('[^ \t\r\n*|]').repeat(1).as(:tag_link) >>
-    str('|').as(:tag_link_end)
+    pipe.as(:tag_link_begin) >>
+    ((space | newline | star | pipe).absent? >> any).
+      repeat1.
+      as(:tag_link) >>
+    pipe.as(:tag_link_end)
   }
   rule(:etc) {any.as(:etc)}
   rule(:token) {
@@ -75,7 +94,7 @@ class VimHelpP < Parslet::Parser
     tag_link |
     etc
   }
-  rule(:help) {token.repeat}
+  rule(:help) {token.repeat0}
   root(:help)
 end
 
