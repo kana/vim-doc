@@ -15,7 +15,7 @@ describe VimHelpP do
     VimHelpP.new.parse('foo *bar* baz').should == [
       {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
       {:etc => ' '},
-      {:tag_anchor_begin => '*', :tag_anchor => 'bar', :tag_anchor_end => '*'},
+      {:begin => '*', :tag_anchor => 'bar', :end => '*'},
       {:etc => ' '},
       {:etc => 'b'}, {:etc => 'a'}, {:etc => 'z'},
     ]
@@ -48,7 +48,7 @@ describe VimHelpP do
       {:etc => '*'},
     ]
     VimHelpP.new.parse('*foo*bar*').should == [
-      {:tag_anchor_begin => '*', :tag_anchor => 'foo', :tag_anchor_end => '*'},
+      {:begin => '*', :tag_anchor => 'foo', :end => '*'},
       {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
       {:etc => '*'},
     ]
@@ -65,7 +65,7 @@ describe VimHelpP do
     VimHelpP.new.parse('foo |bar| baz').should == [
       {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
       {:etc => ' '},
-      {:tag_link_begin => '|', :tag_link => 'bar', :tag_link_end => '|'},
+      {:begin => '|', :tag_link => 'bar', :end => '|'},
       {:etc => ' '},
       {:etc => 'b'}, {:etc => 'a'}, {:etc => 'z'},
     ]
@@ -98,7 +98,7 @@ describe VimHelpP do
       {:etc => '|'},
     ]
     VimHelpP.new.parse('|foo|bar|').should == [
-      {:tag_link_begin => '|', :tag_link => 'foo', :tag_link_end => '|'},
+      {:begin => '|', :tag_link => 'foo', :end => '|'},
       {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
       {:etc => '|'},
     ]
@@ -115,7 +115,7 @@ describe VimHelpP do
     VimHelpP.new.parse("FOO-BAR BAZ *qux*").should == [
       {:header => 'FOO-BAR BAZ'},
       {:etc => ' '},
-      {:tag_anchor_begin => '*', :tag_anchor => 'qux', :tag_anchor_end => '*'},
+      {:begin => '*', :tag_anchor => 'qux', :end => '*'},
     ]
     VimHelpP.new.parse("FOO-BAR BAZ |qux|").should == [
       {:etc => 'F'},
@@ -130,7 +130,7 @@ describe VimHelpP do
       {:etc => 'A'},
       {:etc => 'Z'},
       {:etc => ' '},
-      {:tag_link_begin => '|', :tag_link => 'qux', :tag_link_end => '|'},
+      {:begin => '|', :tag_link => 'qux', :end => '|'},
     ]
   end
 end
@@ -147,9 +147,9 @@ describe VimHelpT do
 
   it 'should transform :tag_anchor into an anchor' do
     VimHelpT.new.apply({
-      :tag_anchor_begin => '*',
+      :begin => '*',
       :tag_anchor => 'foo',
-      :tag_anchor_end => '*',
+      :end => '*',
     }).should == '<span class="tag_anchor">*<a id="foo">foo</a>*</span>'
     VimHelpT.new.apply(VimHelpP.new.parse('*foo*')).should == [
       '<span class="tag_anchor">*<a id="foo">foo</a>*</span>',
@@ -161,9 +161,9 @@ describe VimHelpT do
 
   it 'should transform :tag_link into a link' do
     VimHelpT.new.apply({
-      :tag_link_begin => '|',
+      :begin => '|',
       :tag_link => 'foo',
-      :tag_link_end => '|',
+      :end => '|',
     }).should == '<span class="tag_link">|<a href="#foo">foo</a>|</span>'
     VimHelpT.new.apply(VimHelpP.new.parse('|foo|')).should == [
       '<span class="tag_link">|<a href="#foo">foo</a>|</span>',

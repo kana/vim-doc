@@ -84,18 +84,18 @@ class VimHelpP < Parslet::Parser
       ).as(:header)
   }
   rule(:tag_anchor) {
-    star.as(:tag_anchor_begin) >>
+    star.as(:begin) >>
     ((space | newline | star | pipe).absent? >> any).
       repeat1.
       as(:tag_anchor) >>
-    star.as(:tag_anchor_end)
+    star.as(:end)
   }
   rule(:tag_link) {
-    pipe.as(:tag_link_begin) >>
+    pipe.as(:begin) >>
     ((space | newline | star | pipe).absent? >> any).
       repeat1.
       as(:tag_link) >>
-    pipe.as(:tag_link_end)
+    pipe.as(:end)
   }
   rule(:etc) {any.as(:etc)}
   rule(:token) {
@@ -113,9 +113,9 @@ class VimHelpT < Parslet::Transform
     CGI.escape_html(char.to_s)
   }
   rule(
-    :tag_anchor_begin => simple(:b),
+    :begin => simple(:b),
     :tag_anchor => simple(:id),
-    :tag_anchor_end => simple(:e)
+    :end => simple(:e)
   ) {
     s_b = CGI.escape_html(b.to_s)
     s_id = CGI.escape_html(id.to_s)
@@ -123,9 +123,9 @@ class VimHelpT < Parslet::Transform
     %Q[<span class="tag_anchor">#{s_b}<a id="#{s_id}">#{s_id}</a>#{s_e}</span>]
   }
   rule(
-    :tag_link_begin => simple(:b),
+    :begin => simple(:b),
     :tag_link => simple(:id),
-    :tag_link_end => simple(:e)
+    :end => simple(:e)
   ) {
     # TODO: Link to vimdoc.sf.net for built-in stuffs.
     # TODO: Link to vim-doc.heroku.com for others but "learned" stuffs.
