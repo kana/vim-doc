@@ -217,6 +217,20 @@ describe VimHelpP do
       {:vimscript_link => {:id => '2100'}},
     ]
   end
+
+  it 'should parse a subheader' do
+    VimHelpP.new.parse("foo ~\n").should == [
+      {:subheader => {:text => 'foo ', :marker => '~'}},
+      {:etc => "\n"},
+    ]
+    VimHelpP.new.parse("foo ~").should == [
+      {:etc => 'f'},
+      {:etc => 'o'},
+      {:etc => 'o'},
+      {:etc => ' '},
+      {:etc => '~'},
+    ]
+  end
 end
 
 describe VimHelpT do
@@ -293,6 +307,14 @@ describe VimHelpT do
   it 'should transform :vimscript_link' do
     VimHelpT.new.apply(VimHelpP.new.parse('vimscript#2100')).should == [
       %q(<a class="vimscript_link" href="http://www.vim.org/scripts/script.php?script_id=2100">vimscript#2100</a>),
+    ]
+  end
+
+  it 'should transform :subheader' do
+    VimHelpT.new.apply(VimHelpP.new.parse("foo ~\n")).should == [
+      '<span class="subheader">foo </span>' +
+        '<span class="subheader_marker">~</span>',
+      "\n",
     ]
   end
 end

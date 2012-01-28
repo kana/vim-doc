@@ -87,6 +87,15 @@ class VimHelpP < Parslet::Parser
     (str('=') | str('-')).repeat(3).as(:section_separator) >>
     newline.present?
   }
+  rule(:subheader) {
+    (
+      (
+        ((space | newline | str('~')).absent? >> any) >>
+        ((newline | str('~')).absent? >> any).repeat0
+      ).as(:text) >>
+      str('~').as(:marker) >> newline.present?
+    ).as(:subheader)
+  }
   rule(:special_key) {
     (
       str('<') >>
@@ -135,6 +144,7 @@ class VimHelpP < Parslet::Parser
   rule(:token) {
     header |
     section_separator |
+    subheader |
     special_key |
     special_term |
     option |
@@ -166,6 +176,9 @@ class VimHelpT < Parslet::Transform
   rule(:vimscript_link => {:id => simple(:id)}) {
     base_uri = 'http://www.vim.org/scripts/script.php'
     %Q[<a class="vimscript_link" href="#{base_uri}?script_id=#{id.to_s}">vimscript##{id.to_s}</a>]
+  }
+  rule(:subheader => {:text => simple(:text), :marker => simple(:marker)}) {
+    highlight(:subheader, text) + highlight(:subheader_marker, marker)
   }
   rule(
     :begin => simple(:b),
