@@ -3,39 +3,40 @@
   %head
     %title= App::NAME
     %meta(charset='utf-8')
-    %link(rel='stylesheet' href='/stylesheets/basic.css')
+    %link(rel='stylesheet' href='/stylesheets/bootstrap.min.css')
   %body
-    #header
-      %h1= App::NAME
+    .container
+      #header
+        %h1= App::NAME
 
-    #content
-      %h2 What's this?
-      %p A HTML'ized viewer for Vim :help documents of arbitrary plugins.
+      #content
+        %h2 What's this?
+        %p A HTML'ized viewer for Vim :help documents of arbitrary plugins.
 
-      %h2 Examples
-      %ul
-        %li
-          %a(href='/github/kana/vim-arpeggio/master/doc/arpeggio.txt.html')
-            kana/vim-arpeggio/master/doc/arpeggio.txt
-        %li
-          %a(href='/github/kana/vim-textobj-user/master/doc/textobj-user.txt.html')
-            kana/vim-textobj-user/master/doc/textobj-user.txt
-        %li
-          \...
+        %h2 Examples
+        %ul
+          %li
+            %a(href='/github/kana/vim-arpeggio/master/doc/arpeggio.txt.html')
+              kana/vim-arpeggio/master/doc/arpeggio.txt
+          %li
+            %a(href='/github/kana/vim-textobj-user/master/doc/textobj-user.txt.html')
+              kana/vim-textobj-user/master/doc/textobj-user.txt
+          %li
+            \...
 
-    #footer
-      %address
-        = App::NAME
-        @@VERSION@@
-        &#x2014;
-        Copyright &copy; 2011 
-        %a(href='http://whileimautomaton.net/') Kana Natsuno
-        (
-        %a(href='http://twitter.com/kana1')> @kana1
-        )
-        &#x2014;
-        %a(href='#{App::GITHUB_REPOS_URI}') Watch changes
-        &#x2014;
-        %a(href='#{App::GITHUB_REPOS_URI}/issues') Report issues
+      #footer
+        %address
+          = App::NAME
+          @@VERSION@@
+          &#x2014;
+          Copyright &copy; 2011 
+          %a(href='http://whileimautomaton.net/') Kana Natsuno
+          (
+          %a(href='http://twitter.com/kana1')> @kana1
+          )
+          &#x2014;
+          %a(href='#{App::GITHUB_REPOS_URI}') Watch changes
+          &#x2014;
+          %a(href='#{App::GITHUB_REPOS_URI}/issues') Report issues
 
 -# __END__
