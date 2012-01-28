@@ -172,4 +172,12 @@ describe VimHelpT do
       '<span class="tag_link">|<a href="#f&lt;o">f&lt;o</a>|</span>',
     ]
   end
+
+  it 'should transform :header into a header' do
+    VimHelpT.new.apply(VimHelpP.new.parse("FOO-BAR BAZ *qux*")).should == [
+      '<span class="header">FOO-BAR BAZ</span>',
+      ' ',
+      '<span class="tag_anchor">*<a id="qux">qux</a>*</span>',
+    ]
+  end
 end

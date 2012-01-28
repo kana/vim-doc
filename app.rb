@@ -109,6 +109,9 @@ class VimHelpP < Parslet::Parser
 end
 
 class VimHelpT < Parslet::Transform
+  rule(:header => simple(:header)) {
+    %Q[<span class="header">#{CGI.escape_html(header.to_s)}</span>]
+  }
   rule(
     :begin => simple(:b),
     :tag_anchor => simple(:id),
