@@ -113,13 +113,19 @@ class VimHelpP < Parslet::Parser
   root(:help)
 end
 
+def highlight(type, token)
+  %Q[<span class="#{type.to_s}">#{CGI.escape_html(token.to_s)}</span>]
+end
+
 class VimHelpT < Parslet::Transform
-  rule(:header => simple(:header)) {
-    %Q[<span class="header">#{CGI.escape_html(header.to_s)}</span>]
-  }
-  rule(:section_separator => simple(:s)) {
-    %Q[<span class="section_separator">#{CGI.escape_html(s.to_s)}</span>]
-  }
+  [
+    :header,
+    :section_separator,
+  ].each do |type|
+    rule(type => simple(:token)) {
+      highlight(type, token)
+    }
+  end
   rule(
     :begin => simple(:b),
     :tag_anchor => simple(:id),
