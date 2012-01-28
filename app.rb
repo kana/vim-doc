@@ -59,7 +59,6 @@ class App < Sinatra::Application
 end
 
 class VimHelpP < Parslet::Parser
-  rule(:etc) {match('.').as(:etc)}
   rule(:tag_anchor) {
     str('*').as(:tag_anchor_begin) >>
     match('[^ \t\r\n*|]').repeat(1).as(:tag_anchor) >>
@@ -70,6 +69,7 @@ class VimHelpP < Parslet::Parser
     match('[^ \t\r\n*|]').repeat(1).as(:tag_link) >>
     str('|').as(:tag_link_end)
   }
+  rule(:etc) {match('.').as(:etc)}
   rule(:token) {tag_anchor | tag_link | etc}
   rule(:help) {token.repeat}
   root(:help)
