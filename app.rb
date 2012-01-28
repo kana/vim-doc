@@ -109,9 +109,6 @@ class VimHelpP < Parslet::Parser
 end
 
 class VimHelpT < Parslet::Transform
-  rule(:etc => simple(:char)) {
-    CGI.escape_html(char.to_s)
-  }
   rule(
     :begin => simple(:b),
     :tag_anchor => simple(:id),
@@ -133,6 +130,9 @@ class VimHelpT < Parslet::Transform
     s_id = CGI.escape_html(id.to_s)
     s_e = CGI.escape_html(e.to_s)
     %Q[<span class="tag_link">#{s_b}<a href="##{s_id}">#{s_id}</a>#{s_e}</span>]
+  }
+  rule(:etc => simple(:char)) {
+    CGI.escape_html(char.to_s)
   }
 end
 
