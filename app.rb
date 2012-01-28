@@ -83,6 +83,10 @@ class VimHelpP < Parslet::Parser
         (space.repeat1 >> tag_anchor).present?
       ).as(:header)
   }
+  rule(:section_separator) {
+    (str('=') | str('-')).repeat(3).as(:section_separator) >>
+    newline.present?
+  }
   rule(:tag_anchor) {
     star.as(:begin) >>
     ((space | newline | star | pipe).absent? >> any).
@@ -100,6 +104,7 @@ class VimHelpP < Parslet::Parser
   rule(:etc) {any.as(:etc)}
   rule(:token) {
     header |
+    section_separator |
     tag_anchor |
     tag_link |
     etc
@@ -111,6 +116,9 @@ end
 class VimHelpT < Parslet::Transform
   rule(:header => simple(:header)) {
     %Q[<span class="header">#{CGI.escape_html(header.to_s)}</span>]
+  }
+  rule(:section_separator => simple(:s)) {
+    %Q[<span class="section_separator">#{CGI.escape_html(s.to_s)}</span>]
   }
   rule(
     :begin => simple(:b),

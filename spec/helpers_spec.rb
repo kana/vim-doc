@@ -133,6 +133,33 @@ describe VimHelpP do
       {:begin => '|', :tag_link => 'qux', :end => '|'},
     ]
   end
+
+  it 'should parse a section header' do
+    VimHelpP.new.parse("======\n").should == [
+      {:section_separator => '======'},
+      {:etc => "\n"},
+    ]
+    VimHelpP.new.parse('======').should == [
+      {:etc => '='},
+      {:etc => '='},
+      {:etc => '='},
+      {:etc => '='},
+      {:etc => '='},
+      {:etc => '='},
+    ]
+    VimHelpP.new.parse("------\n").should == [
+      {:section_separator => '------'},
+      {:etc => "\n"},
+    ]
+    VimHelpP.new.parse('------').should == [
+      {:etc => '-'},
+      {:etc => '-'},
+      {:etc => '-'},
+      {:etc => '-'},
+      {:etc => '-'},
+      {:etc => '-'},
+    ]
+  end
 end
 
 describe VimHelpT do
@@ -178,6 +205,13 @@ describe VimHelpT do
       '<span class="header">FOO-BAR BAZ</span>',
       ' ',
       '<span class="tag_anchor">*<a id="qux">qux</a>*</span>',
+    ]
+  end
+
+  it 'should transform :section_separator' do
+    VimHelpT.new.apply(VimHelpP.new.parse("======\n")).should == [
+      '<span class="section_separator">======</span>',
+      "\n",
     ]
   end
 end
