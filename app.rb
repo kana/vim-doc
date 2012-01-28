@@ -69,7 +69,7 @@ class VimHelpP < Parslet::Parser
     match('[^ \t\r\n*|]').repeat(1).as(:tag_link) >>
     str('|').as(:tag_link_end)
   }
-  rule(:etc) {match('.').as(:etc)}
+  rule(:etc) {any.as(:etc)}
   rule(:token) {
     tag_anchor |
     tag_link |
