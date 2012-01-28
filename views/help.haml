@@ -3,28 +3,33 @@
   %head
     %title #{user}/#{repos}/#{ref}/#{path} - #{host} - #{App::NAME}
     %meta(charset='utf-8')
-    %link(rel='stylesheet' href='/stylesheets/basic.css')
+    %link(rel='stylesheet' href='/stylesheets/bootstrap.min.css')
+    %link(rel='stylesheet' href='/stylesheets/syntax-highlighting.css')
   %body
     -# FIXME: Add useful header, nagivation etc.
-    #content
-      %pre= html_help
-    #footer
-      %p
-        This document is automatically converted
-        from
-        %a(href='#{doc_uri}') #{doc_uri}
-        at #{conversion_time}.
-      %address
-        #{App::NAME} @@VERSION@@
-        &#x2014;
-        Copyright &copy; 2011 
-        %a(href='http://whileimautomaton.net/') Kana Natsuno
-        (
-        %a(href='http://twitter.com/kana1')> @kana1
-        )
-        &#x2014;
-        %a(href='#{App::GITHUB_REPOS_URI}') Watch changes
-        &#x2014;
-        %a(href='#{App::GITHUB_REPOS_URI}/issues') Report issues
+    .container
+      #content
+        %pre= html_help
+      #footer
+        %p
+          This document is automatically converted
+          from
+          %a(href='#{doc_uri}') #{doc_uri}
+          by
+          %a(href='/') #{App::NAME}
+          at #{conversion_time}.
+        %address
+          %a(href='/') #{App::NAME}
+          @@VERSION@@
+          &#x2014;
+          Copyright &copy; 2011-2012
+          %a(href='http://whileimautomaton.net/') Kana Natsuno
+          (
+          %a(href='http://twitter.com/kana1')> @kana1
+          )
+          &#x2014;
+          %a(href='#{App::GITHUB_REPOS_URI}') Watch changes
+          &#x2014;
+          %a(href='#{App::GITHUB_REPOS_URI}/issues') Report issues
 
 -# __END__
