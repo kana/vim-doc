@@ -173,6 +173,44 @@ describe VimHelpP do
       {:etc => '>'},
     ]
   end
+
+  it 'should parse a special term' do
+    VimHelpP.new.parse('{lhs}').should == [
+      {:special_term => '{lhs}'},
+    ]
+    VimHelpP.new.parse('{l s}').should == [
+      {:etc => '{'},
+      {:etc => 'l'},
+      {:etc => ' '},
+      {:etc => 's'},
+      {:etc => '}'},
+    ]
+  end
+
+  it 'should parse an option' do
+    VimHelpP.new.parse("'foo'").should == [
+      {:option => "'foo'"}
+    ]
+    VimHelpP.new.parse("'t_XY'").should == [
+      {:option => "'t_XY'"}
+    ]
+    VimHelpP.new.parse("'f o'").should == [
+      {:etc => "'"},
+      {:etc => 'f'},
+      {:etc => ' '},
+      {:etc => 'o'},
+      {:etc => "'"},
+    ]
+    VimHelpP.new.parse("'t_foo'").should == [
+      {:etc => "'"},
+      {:etc => 't'},
+      {:etc => '_'},
+      {:etc => 'f'},
+      {:etc => 'o'},
+      {:etc => 'o'},
+      {:etc => "'"},
+    ]
+  end
 end
 
 describe VimHelpT do
@@ -231,6 +269,18 @@ describe VimHelpT do
   it 'should transform :special_key' do
     VimHelpT.new.apply(VimHelpP.new.parse('<Esc>')).should == [
       '<span class="special_key">&lt;Esc&gt;</span>',
+    ]
+  end
+
+  it 'should transform :special_term' do
+    VimHelpT.new.apply(VimHelpP.new.parse('{lhs}')).should == [
+      '<span class="special_term">{lhs}</span>',
+    ]
+  end
+
+  it 'should transform :option' do
+    VimHelpT.new.apply(VimHelpP.new.parse("'wrap'")).should == [
+      %q(<span class="option">'wrap'</span>),
     ]
   end
 end
