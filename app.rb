@@ -70,7 +70,11 @@ class VimHelpP < Parslet::Parser
     str('|').as(:tag_link_end)
   }
   rule(:etc) {match('.').as(:etc)}
-  rule(:token) {tag_anchor | tag_link | etc}
+  rule(:token) {
+    tag_anchor |
+    tag_link |
+    etc
+  }
   rule(:help) {token.repeat}
   root(:help)
 end
