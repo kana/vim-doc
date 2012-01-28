@@ -160,6 +160,19 @@ describe VimHelpP do
       {:etc => '-'},
     ]
   end
+
+  it 'should parse a special key' do
+    VimHelpP.new.parse('<Esc>').should == [
+      {:special_key => '<Esc>'},
+    ]
+    VimHelpP.new.parse('<E?c>').should == [
+      {:etc => '<'},
+      {:etc => 'E'},
+      {:etc => '?'},
+      {:etc => 'c'},
+      {:etc => '>'},
+    ]
+  end
 end
 
 describe VimHelpT do
@@ -212,6 +225,12 @@ describe VimHelpT do
     VimHelpT.new.apply(VimHelpP.new.parse("======\n")).should == [
       '<span class="section_separator">======</span>',
       "\n",
+    ]
+  end
+
+  it 'should transform :special_key' do
+    VimHelpT.new.apply(VimHelpP.new.parse('<Esc>')).should == [
+      '<span class="special_key">&lt;Esc&gt;</span>',
     ]
   end
 end

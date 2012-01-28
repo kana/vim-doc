@@ -87,6 +87,13 @@ class VimHelpP < Parslet::Parser
     (str('=') | str('-')).repeat(3).as(:section_separator) >>
     newline.present?
   }
+  rule(:special_key) {
+    (
+      str('<') >>
+      match('[A-Za-z0-9_-]').repeat1 >>
+      str('>')
+    ).as(:special_key)
+  }
   rule(:tag_anchor) {
     star.as(:begin) >>
     ((space | newline | star | pipe).absent? >> any).
@@ -105,6 +112,7 @@ class VimHelpP < Parslet::Parser
   rule(:token) {
     header |
     section_separator |
+    special_key |
     tag_anchor |
     tag_link |
     etc
@@ -121,6 +129,7 @@ class VimHelpT < Parslet::Transform
   [
     :header,
     :section_separator,
+    :special_key,
   ].each do |type|
     rule(type => simple(:token)) {
       highlight(type, token)
