@@ -99,7 +99,10 @@ class VimHelpP < Parslet::Parser
   rule(:special_key) {
     (
       str('<') >>
-      match('[A-Za-z0-9_-]').repeat1 >>
+      (
+        match('[ACDMS]') >> str('-') >> any |
+        match('[A-Za-z0-9_-]').repeat1
+      ) >>
       str('>')
     ).as(:special_key)
   }

@@ -165,6 +165,9 @@ describe VimHelpP do
     VimHelpP.new.parse('<Esc>').should == [
       {:special_key => '<Esc>'},
     ]
+    VimHelpP.new.parse('<C-@>').should == [
+      {:special_key => '<C-@>'},
+    ]
     VimHelpP.new.parse('<E?c>').should == [
       {:etc => '<'},
       {:etc => 'E'},
