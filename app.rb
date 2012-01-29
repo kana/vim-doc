@@ -98,6 +98,12 @@ class VimHelpP < Parslet::Parser
   }
   rule(:special_key) {
     (
+      str('CTRL-') >>
+      (
+        str('{char}') |
+        match('[A-Za-z0-9]').repeat1 |
+        any
+      ) |
       str('<') >>
       (
         match('[ACDMS]') >> str('-') >> any |

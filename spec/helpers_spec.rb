@@ -168,6 +168,15 @@ describe VimHelpP do
     VimHelpP.new.parse('<C-@>').should == [
       {:special_key => '<C-@>'},
     ]
+    VimHelpP.new.parse('CTRL-@').should == [
+      {:special_key => 'CTRL-@'},
+    ]
+    VimHelpP.new.parse('CTRL-Break').should == [
+      {:special_key => 'CTRL-Break'},
+    ]
+    VimHelpP.new.parse('CTRL-{char}').should == [
+      {:special_key => 'CTRL-{char}'},
+    ]
     VimHelpP.new.parse('<E?c>').should == [
       {:etc => '<'},
       {:etc => 'E'},
