@@ -4,6 +4,7 @@
 .section_separator {color: #990000;}
 .special_key {color: #cc6600;}
 .special_term {color: #cc6600;}
+.optional_term {color: #cc6600;}
 .option {color: #33cc33;}
 .vimscript_link {}
 .subheader {color: #996600;}

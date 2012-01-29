@@ -119,6 +119,13 @@ class VimHelpP < Parslet::Parser
       str('}')
     ).as(:special_term)
   }
+  rule(:optional_term) {
+    (
+      str('[') >>
+      match('[^ \t\[\]]').repeat1 >>
+      str(']')
+    ).as(:optional_term)
+  }
   rule(:option) {
     (
       str("'") >>
@@ -156,6 +163,7 @@ class VimHelpP < Parslet::Parser
     subheader |
     special_key |
     special_term |
+    optional_term |
     option |
     vimscript_link |
     tag_anchor |
@@ -176,6 +184,7 @@ class VimHelpT < Parslet::Transform
     :section_separator,
     :special_key,
     :special_term,
+    :optional_term,
     :option,
   ].each do |type|
     rule(type => simple(:token)) {

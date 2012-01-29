@@ -199,6 +199,21 @@ describe VimHelpP do
     ]
   end
 
+  it 'should parse a optional term' do
+    VimHelpP.new.parse('[range]').should == [
+      {:optional_term => '[range]'},
+    ]
+    VimHelpP.new.parse('[ra ge]').should == [
+      {:etc => '['},
+      {:etc => 'r'},
+      {:etc => 'a'},
+      {:etc => ' '},
+      {:etc => 'g'},
+      {:etc => 'e'},
+      {:etc => ']'},
+    ]
+  end
+
   it 'should parse an option' do
     VimHelpP.new.parse("'foo'").should == [
       {:option => "'foo'"}
@@ -307,6 +322,12 @@ describe VimHelpT do
   it 'should transform :special_term' do
     VimHelpT.new.apply(VimHelpP.new.parse('{lhs}')).should == [
       '<span class="special_term">{lhs}</span>',
+    ]
+  end
+
+  it 'should transform :optional_term' do
+    VimHelpT.new.apply(VimHelpP.new.parse('[range]')).should == [
+      '<span class="optional_term">[range]</span>',
     ]
   end
 
