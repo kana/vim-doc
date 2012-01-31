@@ -312,7 +312,8 @@ class VimHelpP < Parslet::Parser
     ((space | newline | star | pipe).absent? >> any).
       repeat1.
       as(:tag_anchor) >>
-    star.as(:end)
+    star.as(:end) >>
+    (any.absent? | (space | newline).present?)
   }
   rule(:tag_link) {
     pipe.as(:begin) >>

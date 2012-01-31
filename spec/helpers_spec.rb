@@ -59,9 +59,9 @@ describe VimHelpP do
       {:etc => '*'},
     ]
     VimHelpP.new.parse('*foo*bar*').should == [
-      {:begin => '*', :tag_anchor => 'foo', :end => '*'},
-      {:etc => 'b'}, {:etc => 'a'}, {:etc => 'r'},
       {:etc => '*'},
+      {:etc => 'f'}, {:etc => 'o'}, {:etc => 'o'},
+      {:begin => '*', :tag_anchor => 'bar', :end => '*'},
     ]
     VimHelpP.new.parse('*foo|bar*').should == [
       {:etc => '*'},
