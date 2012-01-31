@@ -1,5 +1,16 @@
 require './app.rb'
 
+describe UriParser do
+  it 'should parse an absolute URI' do
+    UriParser.new.parse('http://www.vim.org/').should == 'http://www.vim.org/'
+  end
+  it 'should not parse a modeline as a URI' do
+    expect {
+      UriParser.new.parse('vim:tw=78')
+    }.to raise_error(Parslet::ParseFailed)
+  end
+end
+
 describe VimHelpP do
   it 'should parse a plain character as :etc' do
     VimHelpP.new.parse('foo bar baz').should == [
@@ -283,6 +294,12 @@ describe VimHelpP do
       {:etc => "\n"},
     ]
   end
+
+  it 'should parse an absolute URI' do
+    VimHelpP.new.parse('http://www.vim.org/').should == [
+      {:uri => 'http://www.vim.org/'},
+    ]
+  end
 end
 
 describe VimHelpT do
@@ -385,6 +402,12 @@ describe VimHelpT do
       'b',
       'a',
       'z',
+    ]
+  end
+
+  it 'should transform :uri' do
+    VimHelpT.new.apply(VimHelpP.new.parse('http://www.vim.org/')).should == [
+      %Q(<a href="http://www.vim.org/" class="uri">http://www.vim.org/</a>)
     ]
   end
 end

@@ -68,6 +68,171 @@ module Parslet::Atoms::DSL
   end
 end
 
+class UriParser < Parslet::Parser
+  root(:uri)
+  rule(:uri) {
+    # str('#') >> fragment |
+    # relative_uri >> (str('#') >> fragment).maybe |
+    absolute_uri >> (str('#') >> fragment).maybe
+  }
+  rule(:absolute_uri) {
+    # scheme >> str(':') >> (hier_part | opaque_part)
+    scheme >> str(':') >> hier_part
+  }
+  rule(:relative_uri) {
+    (net_path | abs_path | rel_path) >> (str('?') >> query).maybe
+  }
+
+  rule(:hier_part) {
+    (net_path | abs_path) >> (str('?') >> query).maybe
+  }
+  rule(:opaque_part) {
+    uric_no_slash >> uric.repeat
+  }
+
+  rule(:uric_no_slash) {
+    unreserved | escaped | str(';') | str('?') | str(':') | str('@') |
+    str('&') | str('=') | str('+') | str('$') | str(',')
+  }
+
+  rule(:net_path) {
+    # str('//') >> authority >> abs_path.maybe
+    str('//') >> authority >> abs_path
+  }
+  rule(:abs_path) {
+    str('/') >> path_segments
+  }
+  rule(:rel_path) {
+    rel_segment >> abs_path.maybe
+  }
+
+  rule(:rel_segment) {
+    (
+      unreserved | escaped |
+      str(';') | str('@') | str('&') | str('=') |
+      str('+') | str('$') | str(',')
+    ).repeat(1)
+  }
+
+  rule(:scheme) {
+    alpha >> (alpha | digit | str('+') | str('-') | str('.')).repeat
+  }
+
+  rule(:authority) {
+    server | reg_name
+  }
+
+  rule(:reg_name) {
+    (
+      unreserved | escaped |
+      str('$') | str(',') | str(';') | str(':') |
+      str('@') | str('&') | str('=') | str('+')
+    ).repeat(1)
+  }
+
+  rule(:server) {
+    ((userinfo >> str('@')).maybe >> hostport).maybe
+  }
+  rule(:userinfo) {
+    (
+      unreserved | escaped |
+      str(';') | str(':') | str('&') | str('=') |
+      str('+') | str('$') | str(',')
+    ).repeat
+  }
+
+  rule(:hostport) {
+    host >> (str(':') >> port).maybe
+  }
+  rule(:host) {
+    hostname | ipv4address
+  }
+  rule(:hostname) {
+    (domainlabel >> str('.')).repeat >> toplabel >> str('.').maybe
+  }
+  rule(:domainlabel) {
+    alphanum | alphanum >> (alphanum | str('-')).repeat >> alphanum
+  }
+  rule(:toplabel) {
+    alpha | alpha >> (alphanum | str('-')).repeat >> alphanum
+  }
+  rule(:ipv4address) {
+    digit.repeat(1) >> str('.') >>
+    digit.repeat(1) >> str('.') >>
+    digit.repeat(1) >> str('.') >>
+    digit.repeat(1)
+  }
+  rule(:port) {
+    digit.repeat
+  }
+
+  rule(:path) {
+    (abs_path | opaque_part).maybe
+  }
+  rule(:path_segments) {
+    segment >> (str('/') >> segment).repeat
+  }
+  rule(:segment) {
+    pchar.repeat >> (str(';') >> param).repeat
+  }
+  rule(:param) {
+    pchar.repeat
+  }
+  rule(:pchar) {
+    unreserved | escaped |
+    str(':') | str('@') | str('&') | str('=') |
+    str('+') | str('$') | str(',')
+  }
+
+  rule(:query) {
+    uric.repeat
+  }
+
+  rule(:fragment) {
+    uric.repeat
+  }
+
+  rule(:uric) {
+    reserved | unreserved | escaped
+  }
+  rule(:reserved) {
+    str(';') | str('/') | str('?') | str(':') |
+    str('@') | str('&') | str('=') | str('+') |
+    str('$') | str(',')
+  }
+  rule(:unreserved) {
+    alphanum | mark
+  }
+  rule(:mark) {
+    str('-') | str('_') | str('.') | str('!') |
+    str('~') | str('*') | str("'") | str('(') | str(')')
+  }
+
+  rule(:escaped) {
+    str('%') >> hex >> hex
+  }
+  rule(:hex) {
+    digit | match('[A-F]') | match('[a-f]')
+  }
+
+  rule(:alphanum) {
+    alpha | digit
+  }
+  rule(:alpha) {
+    lowalpha | upalpha
+  }
+
+  rule(:lowalpha) {
+    match('[a-z]')
+  }
+  rule(:upalpha) {
+    match('[A-Z]')
+  }
+  rule(:digit) {
+    match('[0-9]')
+  }
+end
+
 class VimHelpP < Parslet::Parser
   rule(:space) {match('[ \t]')}
   rule(:newline) {match('[\r\n]')}
@@ -174,6 +339,9 @@ class VimHelpP < Parslet::Parser
       example_end.as(:end)
     ).as(:example)
   }
+  rule(:uri) {
+    UriParser.new.as(:uri)
+  }
   rule(:token) {
     header |
     section_separator |
@@ -186,6 +354,7 @@ class VimHelpP < Parslet::Parser
     tag_anchor |
     tag_link |
     example |
+    uri |
     etc
   }
   rule(:help) {token.repeat0}
@@ -249,6 +418,10 @@ class VimHelpT < Parslet::Transform
     s_t = CGI.escape_html(t.to_s)
     s_e = CGI.escape_html(e.to_s)
     %Q[<span class="example"><span class="example_marker">#{s_b}</span>#{s_t}<span class="example_marker">#{s_e}</span></span>]
+  }
+  rule(:uri => simple(:uri)) {
+    s_uri = CGI.escape_html(uri.to_s)
+    %Q[<a href="#{s_uri}" class="uri">#{s_uri}</a>]
   }
   rule(:etc => simple(:char)) {
     CGI.escape_html(char.to_s)

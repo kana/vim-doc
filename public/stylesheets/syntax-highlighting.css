@@ -15,6 +15,7 @@
 .tag_link a {}
 .example {color: #0066cc;}
 .example_marker {color: #ccffff;}
+.uri {}
 
 /* __END__ {{{1*/
 /* vim: set foldmethod=marker: */
