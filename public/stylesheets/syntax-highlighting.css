@@ -1,9 +1,22 @@
 @charset 'UTF-8';
 
-.tag_anchor {color: #ffcccc;}
-.tag_anchor a {color: #990000;}
-.tag_link {color: #ccffff;}
-.tag_link a {}
+.help {color: #657b83; background: #fdf6e3;}
+.help .header {color: #719e07;}
+.help .section_separator {color: #cb4b16;}
+.help .special_key {color: #dc322f;}
+.help .special_term {color: #dc322f;}
+.help .optional_term {color: #dc322f;}
+.help .option {color: #b58900;}
+.help .vimscript_link {}
+.help .subheader {color: #cb4b16;}
+.help .subheader_marker {color: #ffffff;}
+.help .tag_anchor {color: #ffffff;}
+.help .tag_anchor a {color: #2aa198; text-decoration: none;}
+.help .tag_link {color: #ffffff;}
+.help .tag_link a {color: #2aa198; text-decoration: underline;}
+.help .example {color: #93a1a1;}
+.help .example_marker {color: #ffffff;}
+.help .uri {color: #2aa198; text-decoration: underline;}
 
 /* __END__ {{{1*/
 /* vim: set foldmethod=marker: */
