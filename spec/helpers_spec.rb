@@ -258,6 +258,31 @@ describe VimHelpP do
       {:etc => '~'},
     ]
   end
+
+  it 'should parse an example' do
+    VimHelpP.new.parse(">\n foo\n bar\n<").should == [
+      {:example => {:begin => ">", :text => "\n foo\n bar", :end => "\n<"}},
+    ]
+    VimHelpP.new.parse(">\n foo\n bar\nbaz").should == [
+      {:example => {:begin => ">", :text => "\n foo\n bar", :end => "\n"}},
+      {:etc => 'b'},
+      {:etc => 'a'},
+      {:etc => 'z'},
+    ]
+    VimHelpP.new.parse(">\nLicense: ...\n  ...\n}}}\n").should == [
+      {:etc => '>'},
+      {:etc => "\n"},
+      {:etc => 'L'}, {:etc => 'i'}, {:etc => 'c'}, {:etc => 'e'},
+      {:etc => 'n'}, {:etc => 's'}, {:etc => 'e'}, {:etc => ':'},
+      {:etc => ' '}, {:etc => '.'}, {:etc => '.'}, {:etc => '.'},
+      {:etc => "\n"},
+      {:etc => ' '}, {:etc => ' '},
+      {:etc => '.'}, {:etc => '.'}, {:etc => '.'},
+      {:etc => "\n"},
+      {:etc => '}'}, {:etc => '}'}, {:etc => '}'},
+      {:etc => "\n"},
+    ]
+  end
 end
 
 describe VimHelpT do
@@ -348,6 +373,18 @@ describe VimHelpT do
       '<span class="subheader">foo </span>' +
         '<span class="subheader_marker">~</span>',
       "\n",
+    ]
+  end
+
+  it 'should transform :example' do
+    VimHelpT.new.apply(VimHelpP.new.parse(">\n foo\n bar\n<")).should == [
+      %Q(<span class="example"><span class="example_marker">&gt;</span>\n foo\n bar<span class="example_marker">\n&lt;</span></span>),
+    ]
+    VimHelpT.new.apply(VimHelpP.new.parse(">\n foo\n bar\nbaz")).should == [
+      %Q(<span class="example"><span class="example_marker">&gt;</span>\n foo\n bar<span class="example_marker">\n</span></span>),
+      'b',
+      'a',
+      'z',
     ]
   end
 end

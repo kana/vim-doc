@@ -157,6 +157,23 @@ class VimHelpP < Parslet::Parser
     pipe.as(:end)
   }
   rule(:etc) {any.as(:etc)}
+  rule(:example_begin) {
+    str('>')
+  }
+  rule(:example_end) {
+    newline >> (str('<') | (space | newline).absent?)
+  }
+  rule(:example) {
+    (
+      example_begin.as(:begin) >>
+      (
+        newline >> newline.present? |
+        newline >> space >> (newline.absent? >> any).repeat0 |
+        example_end.absent? >> any
+      ).repeat1.as(:text) >>
+      example_end.as(:end)
+    ).as(:example)
+  }
   rule(:token) {
     header |
     section_separator |
@@ -168,6 +185,7 @@ class VimHelpP < Parslet::Parser
     vimscript_link |
     tag_anchor |
     tag_link |
+    example |
     etc
   }
   rule(:help) {token.repeat0}
@@ -219,6 +237,18 @@ class VimHelpT < Parslet::Transform
     s_id = CGI.escape_html(id.to_s)
     s_e = CGI.escape_html(e.to_s)
     %Q[<span class="tag_link">#{s_b}<a href="##{s_id}">#{s_id}</a>#{s_e}</span>]
+  }
+  rule(
+    :example => {
+      :begin => simple(:b),
+      :text => simple(:t),
+      :end => simple(:e)
+    }
+  ) {
+    s_b = CGI.escape_html(b.to_s)
+    s_t = CGI.escape_html(t.to_s)
+    s_e = CGI.escape_html(e.to_s)
+    %Q[<span class="example"><span class="example_marker">#{s_b}</span>#{s_t}<span class="example_marker">#{s_e}</span></span>]
   }
   rule(:etc => simple(:char)) {
     CGI.escape_html(char.to_s)
