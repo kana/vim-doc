@@ -26,6 +26,7 @@ class App < Sinatra::Application
              conversion_time: Time.now,
              doc_uri: raw_uri,
              html_help: htmlize(fetch_response.body),
+             uri_info: extract_uri_info(raw_uri),
            }
     else
       halt fetch_response.status, fetch_response.header['Status']
@@ -33,6 +34,24 @@ class App < Sinatra::Application
   end
 
   helpers do
+    def extract_uri_info(uri)
+      m = %r(^https://raw\.(?<host>github)\.com/(?<user>[^/]+)/(?<repos>[^/]+)/(?<ref>[^/]+)/(?<path>.+)$).match(uri)
+      if m then
+        {
+          match?: true,
+          host: m[:host],
+          user: m[:user],
+          repos: m[:repos],
+          ref: m[:ref],
+          path: m[:path],
+        }
+      else
+        {
+          match?: false,
+        }
+      end
+    end
+
     def fetch(uri)
       HTTPClient.new.get(uri)
     end

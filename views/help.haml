@@ -1,10 +1,15 @@
 !!! 5
 %html
   %head
-    -# FIXME: More natural title.
-    -# For example, "$path of $repos $ref by $user at github"
-    -# instead of "https://raw.github.com/$user/$repos/$ref/$path".
-    %title #{doc_uri} - #{App::NAME}
+    %title
+      - if uri_info[:match?] then
+        #{uri_info[:path]} -
+        #{uri_info[:repos]} #{uri_info[:ref]} by
+        #{uri_info[:user]} at
+        #{uri_info[:host]}
+      - else
+        #{doc_uri}
+      \- #{App::NAME}
     %meta(charset='utf-8')
     %link(rel='stylesheet' href='/stylesheets/bootstrap.min.css')
     %link(rel='stylesheet' href='/stylesheets/syntax-highlighting.css')
