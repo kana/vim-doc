@@ -32,8 +32,13 @@
               The latest
               %code :help
               document of vim-textobj-user
-          %li
-            \...
+
+        %h2 Want to view more documents?
+        %form(action='/view' method='GET')
+          %div
+            %input(name='uri' type='text' value=''
+                   placeholder='URI to a raw document...' class='span6')
+            %input(type='submit' value='View' class='btn primary')
 
       #footer
         %address
