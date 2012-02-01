@@ -344,28 +344,24 @@ class VimHelpT < Parslet::Transform
       highlight(type, token)
     }
   end
-  rule(:vimscript_link => {:id => simple(:id)}) {
+
+  rule(vimscript_link: {id: simple(:id)}) {
     base_uri = 'http://www.vim.org/scripts/script.php'
     %Q[<a class="vimscript_link" href="#{base_uri}?script_id=#{id.to_s}">vimscript##{id.to_s}</a>]
   }
-  rule(:subheader => {:text => simple(:text), :marker => simple(:marker)}) {
+
+  rule(subheader: {text: simple(:text), marker: simple(:marker)}) {
     highlight(:subheader, text) + highlight(:subheader_marker, marker)
   }
-  rule(
-    :begin => simple(:b),
-    :tag_anchor => simple(:id),
-    :end => simple(:e)
-  ) {
+
+  rule(begin: simple(:b), tag_anchor: simple(:id), end: simple(:e)) {
     s_b = CGI.escape_html(b.to_s)
     s_id = CGI.escape_html(id.to_s)
     s_e = CGI.escape_html(e.to_s)
     %Q[<span class="tag_anchor">#{s_b}<a id="#{s_id}">#{s_id}</a>#{s_e}</span>]
   }
-  rule(
-    :begin => simple(:b),
-    :tag_link => simple(:id),
-    :end => simple(:e)
-  ) {
+
+  rule(begin: simple(:b), tag_link: simple(:id), end: simple(:e)) {
     # TODO: Link to vimdoc.sf.net for built-in stuffs.
     # TODO: Link to vim-doc.heroku.com for others but "learned" stuffs.
     s_b = CGI.escape_html(b.to_s)
@@ -373,23 +369,20 @@ class VimHelpT < Parslet::Transform
     s_e = CGI.escape_html(e.to_s)
     %Q[<span class="tag_link">#{s_b}<a href="##{s_id}">#{s_id}</a>#{s_e}</span>]
   }
-  rule(
-    :example => {
-      :begin => simple(:b),
-      :text => simple(:t),
-      :end => simple(:e)
-    }
-  ) {
+
+  rule(example: {begin: simple(:b), text: simple(:t), end: simple(:e)}) {
     s_b = CGI.escape_html(b.to_s)
     s_t = CGI.escape_html(t.to_s)
     s_e = CGI.escape_html(e.to_s)
     %Q[<span class="example"><span class="example_marker">#{s_b}</span>#{s_t}<span class="example_marker">#{s_e}</span></span>]
   }
-  rule(:uri => simple(:uri)) {
+
+  rule(uri: simple(:uri)) {
     s_uri = CGI.escape_html(uri.to_s)
     %Q[<a href="#{s_uri}" class="uri">#{s_uri}</a>]
   }
-  rule(:etc => simple(:char)) {
+
+  rule(etc: simple(:char)) {
     CGI.escape_html(char.to_s)
   }
 end
