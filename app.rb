@@ -2,6 +2,7 @@ require 'cgi'
 require 'haml'
 require 'httpclient'
 require 'sinatra'
+require 'uri'
 
 require './parser.rb'
 
@@ -18,6 +19,11 @@ class App < Sinatra::Application
 
   get '/view' do
     raw_uri = request.query_string
+    m = /^uri=(.*)$/.match(raw_uri)
+    if m then
+      redirect to("/view?#{URI.decode(m[1])}")
+    end
+
     fetch_response = fetch(raw_uri)
     if fetch_response.status == 200 then
       cache_control :public, :max_age => 30 * 24 * 60 * 60
