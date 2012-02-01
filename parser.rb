@@ -179,19 +179,32 @@ class UriParser < Parslet::Parser
 end
 
 class VimHelpP < Parslet::Parser
-  rule(:space) {match('[ \t]')}
-  rule(:newline) {match('[\r\n]')}
-  rule(:star) {str('*')}
-  rule(:pipe) {str('|')}
-  rule(:header_letter) {match('[-A-Z]')}
-  rule(:header_word) {header_letter.repeat1}
-  rule(:header_words) {header_word >> (space.repeat1 >> header_word).repeat0}
-
+  rule(:space) {
+    match('[ \t]')
+  }
+  rule(:newline) {
+    match('[\r\n]')
+  }
+  rule(:star) {
+    str('*')
+  }
+  rule(:pipe) {
+    str('|')
+  }
+  rule(:header_letter) {
+    match('[-A-Z]')
+  }
+  rule(:header_word) {
+    header_letter.repeat1
+  }
+  rule(:header_words) {
+    header_word >> (space.repeat1 >> header_word).repeat0
+  }
   rule(:header) {
-      (
-        header_words >>
-        (space.repeat1 >> tag_anchor).present?
-      ).as(:header)
+    (
+      header_words >>
+      (space.repeat1 >> tag_anchor).present?
+    ).as(:header)
   }
   rule(:section_separator) {
     (str('=') | str('-')).repeat(3).as(:section_separator) >>
@@ -267,7 +280,9 @@ class VimHelpP < Parslet::Parser
       as(:tag_link) >>
     pipe.as(:end)
   }
-  rule(:etc) {any.as(:etc)}
+  rule(:etc) {
+    any.as(:etc)
+  }
   rule(:example_begin) {
     str('>')
   }
@@ -303,7 +318,9 @@ class VimHelpP < Parslet::Parser
     uri |
     etc
   }
-  rule(:help) {token.repeat0}
+  rule(:help) {
+    token.repeat0
+  }
   root(:help)
 end
 
