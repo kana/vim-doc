@@ -1,7 +1,15 @@
 !!! 5
 %html
   %head
-    %title #{user}/#{repos}/#{ref}/#{path} - #{host} - #{App::NAME}
+    %title
+      - if uri_info[:match?] then
+        #{uri_info[:path]} -
+        #{uri_info[:repos]} #{uri_info[:ref]} by
+        #{uri_info[:user]} at
+        #{uri_info[:host]}
+      - else
+        #{doc_uri}
+      \- #{App::NAME}
     %meta(charset='utf-8')
     %link(rel='stylesheet' href='/stylesheets/bootstrap.min.css')
     %link(rel='stylesheet' href='/stylesheets/syntax-highlighting.css')
