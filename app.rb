@@ -23,6 +23,10 @@ class App < Sinatra::Application
     if m then
       redirect to("/view?#{URI.decode(m[1])}")
     end
+    normalized_uri = normalize_document_uri(raw_uri)
+    if normalized_uri != raw_uri then
+      redirect to("/view?#{normalized_uri}")
+    end
 
     fetch_response = fetch(raw_uri)
     if fetch_response.status == 200 then
@@ -76,6 +80,15 @@ class App < Sinatra::Application
       File.open('data/tags.rb', 'r') do |f|
         return eval(f.read())
       end
+    end
+
+    def normalize_document_uri(uri)
+      s = uri
+      s = s.sub(
+        %r{^https?://github\.com/(?<user>[^/]+)/(?<repos>[^/]+)/blob/(?<ref>[^/]+)/(?<path>.+)$},
+        'https://raw.github.com/\k<user>/\k<repos>/\k<ref>/\k<path>'
+      )
+      s
     end
   end
 end
