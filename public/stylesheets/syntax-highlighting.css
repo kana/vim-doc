@@ -14,6 +14,7 @@
 .help .tag_anchor a {color: #2aa198; text-decoration: none;}
 .help .tag_link {color: #ffffff;}
 .help .tag_link a {color: #2aa198; text-decoration: underline;}
+.help .tag_link .tag_unknown {color: #cb4b16; text-decoration: line-through;}
 .help .example {color: #93a1a1;}
 .help .example_marker {color: #ffffff;}
 .help .uri {color: #2aa198; text-decoration: underline;}

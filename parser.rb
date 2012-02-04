@@ -327,6 +327,27 @@ end
 
 
 
+class VimHelpTagExtractor < Parslet::Transform
+  def self.extract(obj, base_uri = '')
+    context = {
+      tag_dict: {},
+      base_uri: base_uri,
+    }
+
+    self.new.apply(obj, context)
+
+    context[:tag_dict]
+  end
+
+  rule(begin: simple(:_b), tag_anchor: simple(:tag), end: simple(:_e)) {
+    tag_dict[tag.to_s] = "#{base_uri}##{tag}"
+    nil
+  }
+end
+
+
+
+
 def highlight(type, token)
   %Q[<span class="#{type.to_s}">#{CGI.escape_html(token.to_s)}</span>]
 end
@@ -372,9 +393,13 @@ class VimHelpT < Parslet::Transform
     s_b = CGI.escape_html(b.to_s)
     s_tag = CGI.escape_html(tag.to_s)
     s_e = CGI.escape_html(e.to_s)
-    uri = tag_dict.fetch(tag.to_s) {|t| "##{tag}"}
-    s_uri = CGI.escape_html(uri)
-    %Q[<span class="tag_link">#{s_b}<a href="#{s_uri}">#{s_tag}</a>#{s_e}</span>]
+    uri = tag_dict[tag.to_s]
+    if uri then
+      s_uri = CGI.escape_html(uri)
+      %Q[<span class="tag_link">#{s_b}<a href="#{s_uri}">#{s_tag}</a>#{s_e}</span>]
+    else
+      %Q[<span class="tag_link">#{s_b}<span class="tag_unknown" title="Unknown tag - maybe a typo or a tag to an external document">#{s_tag}</span>#{s_e}</span>]
+    end
   }
 
   rule(example: {begin: simple(:b), text: simple(:t), end: simple(:e)}) {

@@ -316,6 +316,24 @@ describe VimHelpP do
   end
 end
 
+describe VimHelpTagExtractor do
+  it 'should extract tags from a parser result' do
+    VimHelpTagExtractor.extract(
+      parse('*foo* |bar| *baz* |qux|')
+    ).should == {
+      'foo' => '#foo',
+      'baz' => '#baz',
+    }
+    VimHelpTagExtractor.extract(
+      parse('*foo* |bar| *baz* |qux|'),
+      'http://www.example.com/'
+    ).should == {
+      'foo' => 'http://www.example.com/#foo',
+      'baz' => 'http://www.example.com/#baz',
+    }
+  end
+end
+
 describe VimHelpT do
   it 'should transform :etc into a plain string' do
     transform({etc: 'f'}).should == 'f'
@@ -341,19 +359,11 @@ describe VimHelpT do
   end
 
   it 'should transform :tag_link into a link' do
-    transform({
-      begin: '|',
-      tag_link: 'foo',
-      end: '|',
-    }).should == '<span class="tag_link">|<a href="#foo">foo</a>|</span>'
-    transform(parse('|foo|')).should == [
-      '<span class="tag_link">|<a href="#foo">foo</a>|</span>',
+    transform(parse('|f<o|'), {:tag_dict => {'f<o' => 'b<|r'}}).should == [
+      '<span class="tag_link">|<a href="b&lt;|r">f&lt;o</a>|</span>',
     ]
     transform(parse('|f<o|')).should == [
-      '<span class="tag_link">|<a href="#f&lt;o">f&lt;o</a>|</span>',
-    ]
-    transform(parse('|foo|'), {:tag_dict => {'foo' => 'b<|r'}}).should == [
-      '<span class="tag_link">|<a href="b&lt;|r">foo</a>|</span>',
+      '<span class="tag_link">|<span class="tag_unknown" title="Unknown tag - maybe a typo or a tag to an external document">f&lt;o</span>|</span>',
     ]
   end
 
