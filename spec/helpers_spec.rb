@@ -316,6 +316,24 @@ describe VimHelpP do
   end
 end
 
+describe VimHelpTagExtractor do
+  it 'should extract tags from a parser result' do
+    VimHelpTagExtractor.extract(
+      parse('*foo* |bar| *baz* |qux|')
+    ).should == {
+      'foo' => '#foo',
+      'baz' => '#baz',
+    }
+    VimHelpTagExtractor.extract(
+      parse('*foo* |bar| *baz* |qux|'),
+      'http://www.example.com/'
+    ).should == {
+      'foo' => 'http://www.example.com/#foo',
+      'baz' => 'http://www.example.com/#baz',
+    }
+  end
+end
+
 describe VimHelpT do
   it 'should transform :etc into a plain string' do
     transform({etc: 'f'}).should == 'f'

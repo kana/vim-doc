@@ -327,6 +327,27 @@ end
 
 
 
+class VimHelpTagExtractor < Parslet::Transform
+  def self.extract(obj, base_uri = '')
+    context = {
+      tag_dict: {},
+      base_uri: base_uri,
+    }
+
+    self.new.apply(obj, context)
+
+    context[:tag_dict]
+  end
+
+  rule(begin: simple(:_b), tag_anchor: simple(:tag), end: simple(:_e)) {
+    tag_dict[tag.to_s] = "#{base_uri}##{tag}"
+    nil
+  }
+end
+
+
+
+
 def highlight(type, token)
   %Q[<span class="#{type.to_s}">#{CGI.escape_html(token.to_s)}</span>]
 end
