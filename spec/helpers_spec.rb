@@ -7,8 +7,8 @@ def parse(s)
   VimHelpP.new.parse(s)
 end
 
-def transform(tokens)
-  VimHelpT.new.apply(tokens)
+def transform(tokens, context = nil)
+  VimHelpT.new.apply(tokens, context)
 end
 
 
@@ -351,6 +351,9 @@ describe VimHelpT do
     ]
     transform(parse('|f<o|')).should == [
       '<span class="tag_link">|<a href="#f&lt;o">f&lt;o</a>|</span>',
+    ]
+    transform(parse('|foo|'), {:tag_dict => {'foo' => 'b<|r'}}).should == [
+      '<span class="tag_link">|<a href="b&lt;|r">foo</a>|</span>',
     ]
   end
 

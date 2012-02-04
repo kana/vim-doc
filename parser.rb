@@ -332,6 +332,12 @@ def highlight(type, token)
 end
 
 class VimHelpT < Parslet::Transform
+  def apply(obj, context = nil)
+    context ||= {}
+    context[:tag_dict] ||= {}
+    super
+  end
+
   [
     :header,
     :section_separator,
@@ -361,13 +367,14 @@ class VimHelpT < Parslet::Transform
     %Q[<span class="tag_anchor">#{s_b}<a id="#{s_id}">#{s_id}</a>#{s_e}</span>]
   }
 
-  rule(begin: simple(:b), tag_link: simple(:id), end: simple(:e)) {
-    # TODO: Link to vimdoc.sf.net for built-in stuffs.
+  rule(begin: simple(:b), tag_link: simple(:tag), end: simple(:e)) {
     # TODO: Link to vim-doc.heroku.com for others but "learned" stuffs.
     s_b = CGI.escape_html(b.to_s)
-    s_id = CGI.escape_html(id.to_s)
+    s_tag = CGI.escape_html(tag.to_s)
     s_e = CGI.escape_html(e.to_s)
-    %Q[<span class="tag_link">#{s_b}<a href="##{s_id}">#{s_id}</a>#{s_e}</span>]
+    uri = tag_dict.fetch(tag.to_s) {|t| "##{tag}"}
+    s_uri = CGI.escape_html(uri)
+    %Q[<span class="tag_link">#{s_b}<a href="#{s_uri}">#{s_tag}</a>#{s_e}</span>]
   }
 
   rule(example: {begin: simple(:b), text: simple(:t), end: simple(:e)}) {

@@ -31,7 +31,7 @@ class App < Sinatra::Application
            locals: {
              conversion_time: Time.now,
              doc_uri: raw_uri,
-             html_help: htmlize(fetch_response.body),
+             html_help: htmlize(fetch_response.body, load_tag_dict()),
              uri_info: extract_uri_info(raw_uri),
            }
     else
@@ -62,8 +62,14 @@ class App < Sinatra::Application
       HTTPClient.new.get(uri)
     end
 
-    def htmlize(s)
-      VimHelpT.new.apply(VimHelpP.new.parse(s)).join()
+    def htmlize(s, tag_dict)
+      VimHelpT.new.apply(VimHelpP.new.parse(s), {tag_dict: tag_dict}).join()
+    end
+
+    def load_tag_dict()
+      File.open('data/tags.rb', 'r') do |f|
+        return eval(f.read())
+      end
     end
   end
 end
